@@ -238,10 +238,11 @@ func (b *VolumeSnapshotter) createSnapshot(snapshotName, volumeID, volumeAZ stri
 		gceSnap.StorageLocations = []string{b.snapshotLocation}
 	}
 
-	_, err = b.gce.Disks.CreateSnapshot(b.snapshotProject, volumeAZ, volumeID, &gceSnap).Do()
+	res, err := b.gce.Disks.CreateSnapshot(b.snapshotProject, volumeAZ, volumeID, &gceSnap).Do()
 	if err != nil {
 		return "", errors.WithStack(err)
 	}
+	b.log.WithField("createSnapshotResponse", res).Info("Got response from CreateSnapshot call")
 
 	return gceSnap.Name, nil
 }
